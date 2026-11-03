@@ -102,7 +102,7 @@ def test_image_round_trip(tmp_path):
     code, out = call(batch_request(tmp_path, "analyze", [src], profile))
     assert code == 0 and out["ok"], out
     image = out["files"][0]["image"]
-    assert out["files"][0]["kind"] == "image" and out["files"][0]["status"] == "needs_review"
+    assert out["files"][0]["kind"] == "image" and out["files"][0]["status"] == "needs_review", out["files"][0]["reasons"]
     assert image["masks"] and image["width"] == f.size[0] and not image["confirmed"]
     choice = {str(src): {"masks": [], "confirmed": image["digest"]}}
     code, out = call(batch_request(tmp_path, "export", [src], profile, out=str(tmp_path / "out"), images=choice))

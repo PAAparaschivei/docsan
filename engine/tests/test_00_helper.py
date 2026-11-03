@@ -9,7 +9,7 @@ import imagekit
 from docsan.image.helper import _environment
 
 
-@pytest.mark.parametrize("command", ["probe", "ocr"])
+@pytest.mark.parametrize("command", ["probe", "ocr", "regions"])
 def test_native_helper_returns_json(tmp_path, command):
     image = tmp_path / "synthetic.png"
     imagekit.render({
@@ -30,7 +30,11 @@ def test_native_helper_returns_json(tmp_path, command):
     assert proc.returncode == 0 and proc.stdout.strip(), diagnostic
     response = json.loads(proc.stdout)
     assert response.get("ok"), diagnostic
-    assert response["width"] == 800 and response["height"] == 120
+    if command == "regions":
+        assert all(isinstance(response[key], list) for key in
+                   ("barcodes", "code_candidates", "colour_components")), diagnostic
+    else:
+        assert response["width"] == 800 and response["height"] == 120
     if command == "ocr":
         text = " ".join(
             candidate["text"]
