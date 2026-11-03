@@ -148,8 +148,10 @@ def fixtures() -> list[ImageFixture]:
         ),
         # Found by tools/find_ocr_fixtures.py against the current Vision model;
         # rerun it if a macOS update changes how Vision reads these.
-        # Only the uncorrected pass reads "AGL" in this script face.
-        ImageFixture("script-code", [line("Ticker AGL", 17.6, 22, font="Snell Roundhand")], size=(400, 66), masked=("AGL",)),
+        # Only the uncorrected pass reads "AGL" in this script face. Some
+        # models read the incidental "closed" as the ordinary word "dosed",
+        # which is included in the synthetic lexicon.
+        ImageFixture("script-code", [line("Ticker AGL closed", 17.6, 22, font="Snell Roundhand")], size=(400, 66), masked=("AGL",)),
         # Every pass's best reading is "AGLS"; only an alternate reading has "AGLs".
         ImageFixture("handwritten-plural", [line("AGLs stable", 20.8, 26, font="Bradley Hand")], size=(334, 78), masked=("AGLs",)),
         # Small capitals and drawn lettering lose letter case: a case-sensitive

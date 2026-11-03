@@ -200,7 +200,7 @@ def second_look(page: Page, masks: list[Mask], matcher: Matcher, guards: list[Bo
     more, _ = plan_masks(again, matcher)
     more = [m for m in more if not any(_overlap(m.box, kept.box) > 0.5 for kept in masks)]
     return fit_to_ink(page.image, more, page.width, page.height,
-                      guards=[*guards, *neighbor_guards(again, matcher)]) if more else []
+                      guards=neighbor_guards(again, matcher), trusted_guards=guards) if more else []
 
 
 @dataclass
@@ -274,7 +274,7 @@ def plan_page(
 
     ocr_masks, _ = plan_masks(ocr, matcher)
     masks = fit_to_ink(page.image, found + ocr_masks, w, h,
-                       guards=[*layer_guards, *neighbor_guards(ocr,matcher)])
+                       guards=neighbor_guards(ocr,matcher), trusted_guards=layer_guards)
     if steps.enabled("pdf-sensitive-fields"):
         masks += field_masks(ocr, lines=best)
     if steps.enabled("pdf-visual-regions"):

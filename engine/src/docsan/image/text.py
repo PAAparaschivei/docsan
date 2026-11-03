@@ -351,22 +351,27 @@ def neighbor_guards(text: ImageText, matcher: Matcher) -> list[Box]:
     return guards
 
 
-def fit_to_ink(path: Path, masks: list[Mask], width: int, height: int, crop: Crop | None = None, guards: list[Box] | tuple[Box, ...] = ()) -> list[Mask]:
+def fit_to_ink(path: Path, masks: list[Mask], width: int, height: int, crop: Crop | None = None, guards: list[Box] | tuple[Box, ...] = (), trusted_guards: list[Box] | tuple[Box, ...] = ()) -> list[Mask]:
     """Fit each recognized mask to the ink of its word (see the helper's
     ``fit``): tight around the word, past the box where a swash runs on,
     clear of neighbouring words, plus a two-pixel margin for anti-aliasing."""
     found = [m for m in masks if m.source == "text"]
     if not found:
         return masks
+    def protecting(mask: Mask) -> list[list[float]]:
+        # OCR readings can disagree about parts of a sensitive token. Only
+        # exact, agreeing text-layer geometry may trim inside its loose box.
+        candidates = [box for box in (*mask.guards, *guards) if _overlap(box, mask.box) < .2]
+        candidates += [box for box in trusted_guards if _edge_guard(box, mask)]
+        return [list(box) for box in candidates
+                if abs((box[1]+box[3]/2)-(mask.box[1]+mask.box[3]/2)) < max(box[3],mask.box[3])]
     if steps.enabled("mask-fit-ink"):
         request: dict = {
             "command": "fit",
             "input": str(path),
             "margin": 2 if steps.enabled("mask-padding") else 0,
             "boxes": [[*m.box, m.reach, 1 if m.vertical else 0] for m in found],
-            "guards": [[list(b) for b in (*m.guards,*guards) if _edge_guard(b,m)
-                        and abs((b[1]+b[3]/2)-(m.box[1]+m.box[3]/2)) < max(b[3],m.box[3])]
-                       for m in found],
+            "guards": [protecting(m) for m in found],
         }
         if not steps.enabled("ocr-orientation"):
             request["orientation"] = False

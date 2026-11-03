@@ -122,7 +122,7 @@ def test_email_box_swallowing_next_word_stops_at_ink_gap(tmp_path):
     x,y,w,h=email
     oversized=(x,y-3,neighbor[0]+neighbor[2]-x+2,h+6)
     masks=fit_to_ink(path,[Mask(oversized,'EMAIL','text',reach=6)],1000,200,
-                     guards=[neighbor])
+                     trusted_guards=[neighbor])
     assert len(masks)==1 and coverage(masks[0].box,email)>.99
     assert _overlap(masks[0].box,neighbor)==0
 

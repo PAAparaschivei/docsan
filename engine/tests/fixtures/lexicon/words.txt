@@ -96,6 +96,7 @@ write
 orders
 applies
 closed
+dosed
 higher
 ticker
 app
