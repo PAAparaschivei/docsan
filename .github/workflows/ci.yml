@@ -38,7 +38,7 @@ jobs:
         working-directory: engine
         run: |
           uv sync --locked
-          uv run --locked pytest -q 'tests/test_images.py::test_fixture[png-references]' 'tests/test_images.py::test_fixture[jpeg-references]' 'tests/test_images.py::test_fixture[script-code]' 'tests/test_pdf.py::test_fixture[text-layer]' tests/test_r05_regions.py::test_email_box_swallowing_next_word_stops_at_ink_gap tests/test_workflow_fixes.py::test_pdf_text_layer_protects_neighbor_from_joined_ocr
+          uv run --locked pytest -q tests/test_00_helper.py tests/test_images.py::test_ocr_step_is_needed_for_controlled_observations 'tests/test_images.py::test_fixture[png-references]' 'tests/test_images.py::test_fixture[jpeg-references]' 'tests/test_images.py::test_fixture[script-code]' 'tests/test_pdf.py::test_fixture[text-layer]' tests/test_r05_regions.py::test_email_box_swallowing_next_word_stops_at_ink_gap tests/test_workflow_fixes.py::test_pdf_text_layer_protects_neighbor_from_joined_ocr
       - name: Run synthetic engine tests
         working-directory: engine
         run: uv run --locked pytest -q --durations=10

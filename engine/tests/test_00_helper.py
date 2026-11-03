@@ -16,9 +16,12 @@ def test_native_helper_returns_json(tmp_path, command):
         "output": str(image), "width": 800, "height": 120,
         "items": [{"text": "DocSan synthetic sample", "x": 30, "y": 30, "size": 36}],
     })
+    request = {"command": command, "input": str(image)}
+    if command == "ocr":
+        request["rotations"] = [90, 270]
     proc = subprocess.run(
         [str(imagekit.helper())],
-        input=json.dumps({"command": command, "input": str(image)}).encode(),
+        input=json.dumps(request).encode(),
         capture_output=True, timeout=180, env=_environment(), check=False,
     )
     # Only this invented fixture reaches the helper. Keep its runtime diagnostic
@@ -39,6 +42,8 @@ def test_native_helper_returns_json(tmp_path, command):
     else:
         assert response["width"] == 800 and response["height"] == 120
     if command == "ocr":
+        assert {entry["rotation"] for entry in response["passes"]} == {0, 90, 270}, diagnostic
+        assert {entry["correction"] for entry in response["passes"] if entry["rotation"] == 0} == {True, False}, diagnostic
         text = " ".join(
             candidate["text"]
             for entry in response["passes"]
