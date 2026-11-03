@@ -34,11 +34,14 @@ jobs:
           brew install --cask libreoffice
           uv python install 3.13
           app/scripts/fetch-tessdata.sh
-      - name: Run synthetic engine tests
+      - name: Run platform regression checks
         working-directory: engine
         run: |
           uv sync --locked
-          uv run --locked pytest -q
+          uv run --locked pytest -q 'tests/test_images.py::test_fixture[script-code]' 'tests/test_pdf.py::test_fixture[text-layer]' tests/test_r05_regions.py::test_email_box_swallowing_next_word_stops_at_ink_gap tests/test_workflow_fixes.py::test_pdf_text_layer_protects_neighbor_from_joined_ocr
+      - name: Run synthetic engine tests
+        working-directory: engine
+        run: uv run --locked pytest -q --durations=10
       - name: Run the documented example
         working-directory: engine
         run: |

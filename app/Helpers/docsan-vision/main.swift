@@ -324,8 +324,8 @@ func fit(_ canvas: Canvas, box b: [Double], margin: Int, guards: [[Double]] = []
         guard min(c1,gc1)>max(c0,gc0) else { continue }
         let right=ga0>(boxA0+boxA1)/2
         guard right ? ga0-boxA1<Int(1.5*size) : boxA0-ga1<Int(1.5*size) else { continue }
-        let low=max(a0,right ? boxA1-Int(0.8*size) : ga1-Int(0.3*size))
-        let high=min(a1,right ? ga0+Int(0.3*size) : boxA0+Int(0.8*size))
+        let low=max(a0,right ? min(boxA1,ga0)-Int(0.8*size) : ga1-Int(0.3*size))
+        let high=min(a1,right ? ga0+Int(0.3*size) : max(boxA0,ga1)+Int(0.8*size))
         guard low<high else { continue }
         var gaps=[(Int,Int)](), p=low
         while p<=high {

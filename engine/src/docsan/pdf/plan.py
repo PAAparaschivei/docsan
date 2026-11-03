@@ -187,7 +187,7 @@ def _clean(text: str) -> str:
     return " ".join(text.split())
 
 
-def second_look(page: Page, masks: list[Mask], matcher: Matcher) -> list[Mask]:
+def second_look(page: Page, masks: list[Mask], matcher: Matcher, guards: list[Box] | tuple[Box, ...] = ()) -> list[Mask]:
     """Masks for what OCR still reads on the page with ``masks`` burned in,
     read enlarged: the picture the output will hold."""
     looked = page.image.with_name(f"{page.image.stem}.look.png")
@@ -199,7 +199,8 @@ def second_look(page: Page, masks: list[Mask], matcher: Matcher) -> list[Mask]:
         looked.unlink(missing_ok=True)
     more, _ = plan_masks(again, matcher)
     more = [m for m in more if not any(_overlap(m.box, kept.box) > 0.5 for kept in masks)]
-    return fit_to_ink(page.image, more, page.width, page.height) if more else []
+    return fit_to_ink(page.image, more, page.width, page.height,
+                      guards=[*guards, *neighbor_guards(again, matcher)]) if more else []
 
 
 @dataclass
@@ -239,12 +240,23 @@ def plan_page(
     counts: dict[str, int] = {}
     found: list[Mask] = []
     emitted: list[tuple[list, list[str], list[int]]] = []
+    layer_guards: list[Box] = []
     diagonal = [_diagonal(line) for line in lines]
     for piece in _segments(lines, flags):
         text = "".join(g.char for g in piece)
         result = matcher.find(text)
         names += result.review
         reps = _replacements(text, result.hits, labeler, style)
+        # An agreeing PDF text layer supplies exact bounds for public words
+        # that an OCR reading may have joined onto a sensitive token.
+        for word in re.finditer(r"\S+", text):
+            if any(word.start() < hit.end and word.end() > hit.start for hit in result.hits):
+                continue
+            by_line: dict[int, list[Box]] = {}
+            for glyph in piece[word.start():word.end()]:
+                if glyph.line >= 0 and glyph.seen and glyph.box:
+                    by_line.setdefault(glyph.line, []).append(glyph.box)
+            layer_guards.extend(_union(boxes) for boxes in by_line.values())
         for start, end, _, label in reps:
             counts[label] = counts.get(label, 0) + 1
             if not any(g.ink > 0 for g in piece[start:end] if g.line >= 0):
@@ -261,7 +273,8 @@ def plan_page(
         emitted.append((piece, *_emit(piece, reps)))
 
     ocr_masks, _ = plan_masks(ocr, matcher)
-    masks = fit_to_ink(page.image, found + ocr_masks, w, h, guards=neighbor_guards(ocr,matcher))
+    masks = fit_to_ink(page.image, found + ocr_masks, w, h,
+                       guards=[*layer_guards, *neighbor_guards(ocr,matcher)])
     if steps.enabled("pdf-sensitive-fields"):
         masks += field_masks(ocr, lines=best)
     if steps.enabled("pdf-visual-regions"):
@@ -270,7 +283,7 @@ def plan_page(
     if steps.enabled("pdf-sensitive-fields"):
         masks += footer_masks(ocr, masks, lines=best)
     masks += owner_masks(choice.get("masks", []), w, h)
-    masks += second_look(page, masks, matcher)
+    masks += second_look(page, masks, matcher, layer_guards)
 
     # The output's text: what each line shows, as emitted, without what a mask covers.
     out_lines: list[OutLine] = []

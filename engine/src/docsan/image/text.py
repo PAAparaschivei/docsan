@@ -364,7 +364,7 @@ def fit_to_ink(path: Path, masks: list[Mask], width: int, height: int, crop: Cro
             "input": str(path),
             "margin": 2 if steps.enabled("mask-padding") else 0,
             "boxes": [[*m.box, m.reach, 1 if m.vertical else 0] for m in found],
-            "guards": [[list(b) for b in (*m.guards,*guards) if _overlap(b,m.box)<.2
+            "guards": [[list(b) for b in (*m.guards,*guards) if _edge_guard(b,m)
                         and abs((b[1]+b[3]/2)-(m.box[1]+m.box[3]/2)) < max(b[3],m.box[3])]
                        for m in found],
         }
@@ -378,6 +378,20 @@ def fit_to_ink(path: Path, masks: list[Mask], width: int, height: int, crop: Cro
         fitted = [whole_pixels(m.box, width, height, _padding(m.box)) for m in found]
     fitted_masks = [Mask(b, m.label, m.source, m.reach, m.vertical, m.guards) for m, b in zip(found, fitted)]
     return _merge(fitted_masks + [m for m in masks if m.source != "text"])
+
+
+def _edge_guard(box: Box, mask: Mask) -> bool:
+    """An oversized OCR box may contain a whole unmatched neighboring word.
+
+    Accept guards near its ends, while excluding a guard over its center.
+    The native fitter still requires an actual ink gap before trimming.
+    """
+    if _overlap(box, mask.box) < .2:
+        return True
+    axis, length = (1, 3) if mask.vertical else (0, 2)
+    center = mask.box[axis] + mask.box[length] / 2
+    other = box[axis] + box[length] / 2
+    return abs(other - center) > mask.box[length] / 4
 
 
 def unmasked(line: Line, masks: list[Mask]) -> str:

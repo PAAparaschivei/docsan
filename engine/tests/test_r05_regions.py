@@ -113,6 +113,20 @@ def test_matrix_with_gray_background_is_still_detected(tmp_path):
     assert any(coverage(tuple(b),(90,80,38,38))>.9 for b in result['code_candidates'])
 
 
+def test_email_box_swallowing_next_word_stops_at_ink_gap(tmp_path):
+    imagekit.helper()
+    path=tmp_path/'email-neighbor.png'
+    words=imagekit.render({'output':str(path),'width':1000,'height':200,'items':[
+        {'text':'elena.marchetti@aurelan.lu now.','x':60,'y':60,'size':28}]})
+    email=tuple(words[0]['box']);neighbor=tuple(words[1]['box'])
+    x,y,w,h=email
+    oversized=(x,y-3,neighbor[0]+neighbor[2]-x+2,h+6)
+    masks=fit_to_ink(path,[Mask(oversized,'EMAIL','text',reach=6)],1000,200,
+                     guards=[neighbor])
+    assert len(masks)==1 and coverage(masks[0].box,email)>.99
+    assert _overlap(masks[0].box,neighbor)==0
+
+
 def test_colored_decorative_mosaic_is_not_a_grayscale_code(tmp_path):
     imagekit.helper()
     rng=random.Random(19);path=tmp_path/'decorative-mosaic.png'

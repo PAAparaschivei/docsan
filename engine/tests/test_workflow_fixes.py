@@ -37,6 +37,36 @@ def test_masked_person_does_not_survive_in_hidden_pdf_text(monkeypatch,tmp_path)
     assert 'Owner' in ' '.join(result.texts) and 'signed' in ' '.join(result.texts)
 
 
+def test_pdf_text_layer_protects_neighbor_from_joined_ocr(monkeypatch,tmp_path):
+    from docsan.image.text import _union
+    from docsan.pdf.read import TextLine
+    imagekit.helper()
+    path=tmp_path/'email-context.png'
+    value='Mail elena.marchetti@aurelan.lu now.'
+    words=imagekit.render({'output':str(path),'width':1000,'height':200,'items':[
+        {'text':value,'x':60,'y':60,'size':28}]})
+    chars=[]
+    for i,word in enumerate(words):
+        if i: chars.append(None)
+        x,y,w,h=word['box'];n=len(word['text'])
+        chars.extend((x+j*w/n,y,w/n,h) for j in range(n))
+    bounds=_union([tuple(w['box']) for w in words])
+    layer=TextLine(value,bounds,chars,[1 if c else 0 for c in chars])
+    # Simulate an OCR model losing the space and character positions. The
+    # agreeing text layer still locates both public neighboring words exactly.
+    joined=value.replace('.lu now','.lunow')
+    ocr=ImageText(1000,200,1,1,False,[Line(bounds,[Reading(joined,1,[None]*len(joined))],0,True)])
+    monkeypatch.setattr(planner,'read_text',lambda *a,**k:ocr)
+    monkeypatch.setattr(planner,'second_look',lambda *args:[])
+    monkeypatch.setattr(planner,'visual_masks',lambda *args,**kwargs:[])
+    profile=Profile('Example','v1',[Term('Aurelan','CLIENT')])
+    result=planner.plan_page(Page(1,path,1000,200,(1000,200),[layer]),'sha',Matcher(profile,set()),Labeler(),{})
+    email=tuple(words[1]['box'])
+    assert any(_overlap(m.box,email)>.99 for m in result.masks)
+    for word in (words[0],words[2]):
+        assert not any(_overlap(m.box,tuple(word['box']))>0 for m in result.masks)
+
+
 def test_field_masks_preserve_labels_and_financial_context():
     source=ImageText(1000,700,1,1,False,[line('Customer',20,40,90),line('Seabright Partners',160,40),
         line('23 RUE DES PINS',20,100),line('Seabright Holdings Ltd',20,160),
