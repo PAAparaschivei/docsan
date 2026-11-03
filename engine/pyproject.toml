@@ -1,0 +1,35 @@
+[project]
+name = "docsan"
+version = "0.1.0"
+description = "Local document redaction with profile rules, human review and separate output verification."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [
+    { name = "Paul-Andrei Aparaschivei" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "lxml>=6.1.3",
+]
+
+[project.urls]
+Repository = "https://github.com/PAAparaschivei/docsan"
+Issues = "https://github.com/PAAparaschivei/docsan/issues"
+Security = "https://github.com/PAAparaschivei/docsan/security/policy"
+
+[project.scripts]
+docsan = "docsan.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.10.6,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: renders files with LibreOffice"]

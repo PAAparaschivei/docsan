@@ -1,0 +1,17 @@
+name: Request a private contact route
+description: Ask how to report a security or conduct concern without posting details publicly.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is public. Do not include names, documents, profiles, credentials or vulnerability details.
+        For security reports, use the Security tab's private reporting option when available.
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Private contact requested for
+      options:
+        - Security report
+        - Conduct concern
+    validations:
+      required: true

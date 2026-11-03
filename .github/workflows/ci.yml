@@ -1,0 +1,53 @@
+name: Source checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: source-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  synthetic-tests:
+    runs-on: macos-26
+    timeout-minutes: 120
+    env:
+      UV_PYTHON: "3.13"
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate public source and documentation
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_*.py'
+          python3 scripts/public_source.py --strict
+          python3 scripts/check_links.py
+      - name: Install test dependencies
+        run: |
+          brew install uv xcodegen tesseract
+          brew install --cask libreoffice
+          uv python install 3.13
+          app/scripts/fetch-tessdata.sh
+      - name: Run synthetic engine tests
+        working-directory: engine
+        run: |
+          uv sync --locked
+          uv run --locked pytest -q
+      - name: Run the documented example
+        working-directory: engine
+        run: |
+          uv run --locked python ../examples/make_demo.py ../build/demo
+          uv run --locked docsan run ../build/demo/input.docx --profile ../examples/profile.json --lexicon tests/fixtures/lexicon --private ../build/demo/private --out ../build/demo/export
+          uv run --locked python ../examples/check_demo.py ../build/demo/export
+      - name: Build native app for local evaluation
+        working-directory: app
+        run: |
+          scripts/bundle-engine.sh
+          xcodegen generate
+          xcodebuild -project DocSan.xcodeproj -scheme DocSan -configuration Debug -derivedDataPath build/DerivedData build

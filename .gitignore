@@ -1,0 +1,61 @@
+# Private originals, company profiles, mappings and review evidence
+/sensitive/
+/private/
+
+# Processing state and local outputs
+/runtime/
+/staging/
+/output/
+/outputs/
+/logs/
+
+# Source-only repository: generate demo files locally, never commit originals.
+*.doc
+*.docx
+*.docm
+*.dotx
+*.dotm
+*.rtf
+*.odt
+*.pdf
+*.pptx
+*.xlsx
+*.jpg
+*.jpeg
+*.png
+*.tiff
+*.heic
+!app/DocSan/Assets.xcassets/AppIcon.appiconset/*.png
+!docs/assets/app-icon.png
+!docs/assets/app-icon-1024.png
+
+# Credentials
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Build products and dependencies
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+target/
+
+# Local application and operating-system files
+.DS_Store
+Thumbs.db
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Generated Xcode project (source of truth: app/project.yml)
+/app/DocSan.xcodeproj/
+xcuserdata/

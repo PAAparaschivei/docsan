@@ -1,0 +1,44 @@
+name: DocSan
+options:
+  bundleIdPrefix: com.aparaschivei
+  deploymentTarget:
+    macOS: "26.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    ENABLE_DEBUG_DYLIB: NO
+targets:
+  DocSan:
+    type: application
+    platform: macOS
+    sources:
+      - path: DocSan
+    info:
+      path: DocSan/Info.plist
+      properties:
+        CFBundleDisplayName: DocSan
+        CFBundleName: DocSan
+        LSApplicationCategoryType: public.app-category.productivity
+        NSHumanReadableCopyright: "Copyright 2026 Paul-Andrei Aparaschivei. Apache-2.0."
+    entitlements:
+      path: DocSan/DocSan.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-write: true
+    postBuildScripts:
+      - name: Embed engine
+        script: '"$SRCROOT/scripts/embed-engine.sh"'
+        basedOnDependencyAnalysis: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.aparaschivei.docsan
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

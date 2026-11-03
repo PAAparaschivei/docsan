@@ -1,0 +1,21 @@
+name: Feature request
+description: A file format, document part or change to the review.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: Describe the need with invented examples. Do not include a real document, company profile, screenshot or confidential context.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you are trying to do and what stops you today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose
+      description: How DocSan could handle it. DocSan processes files locally using explicit rules and OCR, without cloud processing or language models.
+    validations:
+      required: true

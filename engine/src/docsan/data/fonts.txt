@@ -1,0 +1,173 @@
+# Fonts a sanitized Word file may name (decision D-023). A font outside this
+# list becomes Calibri, Cambria or Consolas, because a corporate font's name
+# can name the company. One name per line; the sanitizer and the verifier
+# both read this file.
+American Typewriter
+Angsana New
+Aptos
+Aptos Body
+Aptos Display
+Aptos Headings
+Aptos Mono
+Aptos Narrow
+Aptos Serif
+Arabic Typesetting
+Arial
+Arial Black
+Arial MT
+Arial Narrow
+Arial Nova
+Arial Rounded MT Bold
+Arial Unicode MS
+Avenir
+Avenir Next
+Avenir Next Condensed
+Baskerville
+Batang
+BatangChe
+Book Antiqua
+Bookman Old Style
+Browallia New
+Calibri
+Calibri Body
+Calibri Headings
+Calibri Light
+Cambria
+Cambria Headings
+Cambria Math
+Candara
+Century
+Century Gothic
+Century Schoolbook
+Consolas
+Constantia
+Corbel
+Cordia New
+Courier
+Courier New
+David
+DejaVu Sans
+DejaVu Sans Mono
+DejaVu Serif
+DengXian
+DengXian Light
+Didot
+Dotum
+DotumChe
+Ebrima
+Euphemia
+FangSong
+Fira Sans
+Franklin Gothic Book
+Franklin Gothic Demi
+Franklin Gothic Medium
+Futura
+Gadugi
+Garamond
+Gautami
+Georgia
+Gill Sans
+Gill Sans MT
+Gisha
+Gulim
+GulimChe
+Gungsuh
+GungsuhChe
+Helvetica
+Helvetica Neue
+Hoefler Text
+Impact
+Inter
+Iskoola Pota
+KaiTi
+Kalinga
+Kartika
+Latha
+Lato
+Leelawadee
+Leelawadee UI
+Levenim MT
+Liberation Mono
+Liberation Sans
+Liberation Serif
+Lucida Console
+Lucida Grande
+Lucida Sans
+Lucida Sans Unicode
+Malgun Gothic
+Malgun Gothic Semilight
+Mangal
+Meiryo
+Meiryo UI
+Menlo
+Microsoft JhengHei
+Microsoft JhengHei UI
+Microsoft Sans Serif
+Microsoft YaHei
+Microsoft YaHei UI
+MingLiU
+MingLiU-ExtB
+Miriam
+Monaco
+Montserrat
+MS Gothic
+MS Mincho
+MS PGothic
+MS PMincho
+MS UI Gothic
+Nirmala UI
+Noto Sans
+Noto Serif
+NSimSun
+Open Sans
+Optima
+Palatino
+Palatino Linotype
+PMingLiU
+PMingLiU-ExtB
+Poppins
+PT Sans
+PT Serif
+Raavi
+Raleway
+Roboto
+Roboto Condensed
+Rockwell
+Segoe Print
+Segoe Script
+Segoe UI
+Segoe UI Black
+Segoe UI Emoji
+Segoe UI Light
+Segoe UI Semibold
+Segoe UI Semilight
+Segoe UI Symbol
+Shruti
+SimHei
+Simplified Arabic
+SimSun
+SimSun-ExtB
+Source Code Pro
+Source Sans Pro
+Source Serif Pro
+Sylfaen
+Symbol
+Tahoma
+Times
+Times New Roman
+Times New Roman PS
+Traditional Arabic
+Trebuchet MS
+Tunga
+Ubuntu
+Verdana
+Vrinda
+Webdings
+Wingdings
+Wingdings 2
+Wingdings 3
+Yu Gothic
+Yu Gothic Light
+Yu Gothic Medium
+Yu Gothic UI
+Yu Mincho

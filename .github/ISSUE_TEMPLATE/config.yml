@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a leak or a security problem
+    url: https://github.com/PAAparaschivei/docsan/security/advisories/new
+    about: Leaks, ways around the release checks and network access are reported privately, never in a public issue.
