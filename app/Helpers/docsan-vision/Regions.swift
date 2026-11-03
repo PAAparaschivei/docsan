@@ -1,5 +1,6 @@
 import Foundation
 import CoreGraphics
+import CoreML
 import Vision
 
 /// Geometric observations only. The engine decides which regions to mask.
@@ -8,6 +9,14 @@ func sensitiveRegions(_ canvas: Canvas) throws -> [String: Any] {
     var codes: [[Double]] = []
     func scan(_ region: Canvas, x: Double = 0, y: Double = 0) throws {
         let request = VNDetectBarcodesRequest()
+        // On-device model compilation in macOS VMs supports only the CPU.
+        // Select that backend explicitly: accelerator compilation can append
+        // diagnostics to stdout and corrupt the helper's JSON response.
+        let devices = try request.supportedComputeStageDevices[.main] ?? []
+        guard let cpu = devices.first(where: { if case .cpu = $0 { true } else { false } }) else {
+            throw Failure(message: "barcode detection has no supported CPU device")
+        }
+        request.setComputeDevice(cpu, for: .main)
         try VNImageRequestHandler(cgImage: region.image, options: [:]).perform([request])
         for observation in request.results ?? [] {
             let b = observation.boundingBox

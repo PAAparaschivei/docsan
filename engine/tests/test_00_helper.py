@@ -28,7 +28,10 @@ def test_native_helper_returns_json(tmp_path, command):
         f"stderr={proc.stderr[:6000]!r}"
     )
     assert proc.returncode == 0 and proc.stdout.strip(), diagnostic
-    response = json.loads(proc.stdout)
+    try:
+        response = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        pytest.fail(f"Invalid helper JSON: {diagnostic}", pytrace=False)
     assert response.get("ok"), diagnostic
     if command == "regions":
         assert all(isinstance(response[key], list) for key in
