@@ -38,7 +38,7 @@ jobs:
         working-directory: engine
         run: |
           uv sync --locked
-          uv run --locked pytest -q -x
+          uv run --locked pytest -q
       - name: Run the documented example
         working-directory: engine
         run: |

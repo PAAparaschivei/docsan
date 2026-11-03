@@ -133,10 +133,12 @@ def fixtures() -> list[ImageFixture]:
             size=(900, 700), masked=("Aurelan", "Group", "Marchetti"), visible=("Integration", "layer"),
         ),
         # A large image: Vision shrinks it before reading, and 10-pixel text is
-        # lost unless the image is also read in tiles.
+        # lost unless the image is also read in tiles. Keep only the sensitive
+        # word tiny: incidental prose has different OCR errors across macOS
+        # models and belongs in the unfamiliar-word review tests.
         ImageFixture(
             "small-text-large-image",
-            [line("Integration overview", 60, 60), line("Approved by Aurelan for the release", 1600, 10, x=2400)],
+            [line("Integration overview", 60, 60), line("Aurelan", 1600, 10, x=2400)],
             size=(4600, 3200), masked=("Aurelan",), visible=("Integration", "overview"),
         ),
         ImageFixture(
