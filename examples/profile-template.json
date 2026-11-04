@@ -1,0 +1,22 @@
+{
+  "format": "docsan-profile",
+  "version": 1,
+  "name": "Aurelan Group (fictional template)",
+  "policy": "template-v1",
+  "terms": [
+    {"text": "Aurelan Group", "label": "CLIENT"},
+    {"text": "Aurelan", "label": "CLIENT"},
+    {"text": "AGL", "label": "CLIENT", "case_sensitive": true, "whole_word": true},
+    {"text": "Elena Marchetti", "label": "PERSON", "group": "example-person"},
+    {"text": "Marchetti", "label": "PERSON", "group": "example-person"},
+    {"text": "Northgate Migration", "label": "PROJECT"},
+    {"text": "Aurelan Portal", "label": "SYSTEM"},
+    {"text": "aurelan.example", "label": "DOMAIN"},
+    {"text": "18 Example Street", "label": "ADDRESS"}
+  ],
+  "exceptions": [],
+  "safe_words": ["Kubernetes"],
+  "redact_system_names": true,
+  "person_style": "label",
+  "logos": []
+}

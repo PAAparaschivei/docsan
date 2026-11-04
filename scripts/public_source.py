@@ -32,7 +32,8 @@ EXTRA_FILES = {
     "docs/architecture.md", "docs/limitations.md", "docs/releasing.md",
     "docs/docx-component-contract.md", "docs/pdf-component-contract.md",
     "docs/image-component-contract.md", "docs/assets/app-icon.png",
-    "docs/assets/app-icon-1024.png",
+    "docs/assets/app-icon-1024.png", "docs/assets/app-ready.png",
+    "docs/configuration.md", "docs/privacy.md",
 }
 FORBIDDEN_PARTS = {
     ".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache",
@@ -98,7 +99,7 @@ def path_problem(name: str) -> str | None:
         return "document-archive-or-binary"
     if path.suffix.lower() in {".png", ".jpg", ".jpeg", ".svg"}:
         if not (name.startswith("app/DocSan/Assets.xcassets/AppIcon.appiconset/")
-                or name in {"docs/assets/app-icon.png", "docs/assets/app-icon-1024.png"}):
+                or name in {"docs/assets/app-icon.png", "docs/assets/app-icon-1024.png", "docs/assets/app-ready.png"}):
             return "unreviewed-image"
     return None
 

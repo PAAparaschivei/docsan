@@ -26,3 +26,5 @@ The output should remove the planted company and surname while preserving the in
 Open the input and output in Word or LibreOffice to compare them. This small example demonstrates the workflow, not broad document coverage. The generator refuses to replace an existing input; use a new directory to repeat it.
 
 These commands keep the demo's processing state under `build/demo/private`, separate from normal Application Support storage. The native app has its own sandboxed storage. Never replace the example profile with a real company profile in a public checkout.
+
+For a profile to customize and import into the app, copy [profile-template.json](profile-template.json) to a private location and follow the [configuration guide](../docs/configuration.md). Its stricter person/system settings are separate from this minimal demo. For confidential work, follow the [screen-access and storage guidance](../docs/privacy.md).

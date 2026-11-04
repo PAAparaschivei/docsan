@@ -74,9 +74,10 @@ class PublicSourceTests(unittest.TestCase):
             self.assertEqual([p.name for p in out.iterdir()], ["README.md"])
 
     def test_unreviewed_documents_images_and_credentials_are_blocked(self):
-        for name in ["engine/tests/real.docx", "examples/client.png", "engine/src/.env", "engine/src/private/profile.json"]:
+        for name in ["engine/tests/real.docx", "examples/client.png", "docs/assets/not-reviewed.png", "engine/src/.env", "engine/src/private/profile.json"]:
             with self.subTest(name=name):
                 self.assertIsNotNone(public.path_problem(name))
+        self.assertIsNone(public.path_problem("docs/assets/app-ready.png"))
 
     def test_image_metadata_and_trailing_bytes_block_export(self):
         def chunk(kind, payload):

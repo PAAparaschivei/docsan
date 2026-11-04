@@ -4,6 +4,8 @@
 
 ## Build and run
 
+Start with the complete [requirements](../README.md#requirements): an Apple silicon Mac, macOS 26+, full Xcode, Homebrew, uv, XcodeGen and Tesseract. After the build, the app bundles its runtime and OCR dependencies and needs no provider account or API key. Import the [starter profile](../examples/profile-template.json) using the [configuration guide](../docs/configuration.md).
+
 Runtime dependency versions come from `engine/uv.lock`. The bundle script exports only runtime dependencies, verifies their hashes and installs the DocSan wheel without resolving a second dependency set. This keeps local app builds aligned with the engine test environment. Bundled-app redistribution still requires the [licensing and release checks](../docs/releasing.md).
 
 ```bash
@@ -16,6 +18,8 @@ open build/DerivedData/Build/Products/Debug/DocSan.app
 ```
 
 `project.yml` is the source of truth; the Xcode project is generated and not committed. The build phase `scripts/embed-engine.sh` copies the bundle into the app and signs every binary; the interpreter is signed with `scripts/engine-helper.entitlements` so it inherits the app's sandbox. The app has no network entitlement, so neither it nor the engine can open a connection. Builds are signed ad hoc for local use.
+
+The sandbox does not stop a separate cloud-connected agent from receiving screenshots or text it can access. Read the [privacy boundary](../docs/privacy.md) before processing confidential inputs.
 
 ## How the app uses the engine
 
