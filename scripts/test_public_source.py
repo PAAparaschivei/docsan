@@ -78,6 +78,7 @@ class PublicSourceTests(unittest.TestCase):
             with self.subTest(name=name):
                 self.assertIsNotNone(public.path_problem(name))
         self.assertIsNone(public.path_problem("docs/assets/app-ready.png"))
+        self.assertIsNone(public.path_problem("docs/assets/app-ready-hero.png"))
 
     def test_image_metadata_and_trailing_bytes_block_export(self):
         def chunk(kind, payload):

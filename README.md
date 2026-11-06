@@ -15,7 +15,7 @@ DocSan helps you prepare Word files, PDFs and images for sharing. It applies a p
 
 **Pre-release source.** Build it locally to evaluate it on made-up documents first. Human review remains necessary: OCR can miss text, identifying context can remain and a passing verifier is not a guarantee of anonymity. No signed app download is offered with this source release.
 
-![DocSan ready to import documents with the fictional starter profile loaded](docs/assets/app-ready.png)
+[![DocSan ready to import documents with the fictional starter profile loaded](docs/assets/app-ready-hero.png)](docs/assets/app-ready.png)
 
 The app with the fictional starter profile loaded. No corporate document or private profile appears in this screenshot.
 
